@@ -1,20 +1,17 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Beer />
   </div>
 </template>
 
 <script>
-import Axios from 'axios';
-const baseUrl = 'https://api.myjson.com/bins/1dmbtq';
 
-import HelloWorld from './components/Beer.vue'
+import Beer from './components/Beer.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Beer
   }
 }
 </script>
