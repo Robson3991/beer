@@ -1,15 +1,21 @@
 <template>
   <div class="wrapper">
     <div class="search">
-      <label for="search">Search</label>
+      <label for="search">Nazwa </label>
       <input name="search" v-model="searchValue">
+      <span> Sortuj po: </span>
+      <select v-model="sort">
+        <option v-for="item in options" :label="item.label" :value="item.value"></option>
+      </select>
     </div>
-    <table class="beer-list" v-for="post in filteredList">
-      <tr v-for="(value, key) in post">
-          <td class="beer-ist--name">{{ key }}</td>
-          <td class="beer-list--key">{{ value }}</td>
-     </tr>
-    </table>
+    <div class="beer-list">
+      <div class="beer-list--item" v-for="post in filteredList">
+        <div class="item-parameter" v-for="(value, key) in post">
+            <p class="parameter item-parameter__name">{{ key }}</p>
+            <p class="parameter item-parameter__key">{{ value }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -22,7 +28,15 @@ export default {
   data() {
     return {
       productList: [],
-      searchValue: ''
+      searchValue: '',
+      sort: 'default',
+      options: [
+        {label: 'domyślnie', value: 'default'},
+        {label: 'stand', value: 'stand'},
+        {label: 'alk', value: 'alk'},
+        {label: 'plato', value: 'plato'},
+        {label: 'ibu', value: 'ibu'},
+      ]
     }
   },
   async created() {
@@ -31,10 +45,31 @@ export default {
   },
   computed: {
     filteredList() {
-      return this.productList.filter(post => {
+
+      let beers = this.productList.filter(post => {
         return post.name.toLowerCase().includes(this.searchValue.toLowerCase())
-      })
+      });
+
+      let sortOption = this.sort;
+
+      function compare(a, b){
+      switch(sortOption){
+        case 'stand':
+          return b.stand - a.stand;
+        case 'alk':
+          return b.alk - a.alk;
+        case 'plato':
+          return b.plato - a.plato;
+        case 'ibu':
+          return b.ibu - a.ibu;
+        default:
+          return b - a;
+      }
     }
+        
+    return beers.sort(compare);
+      
+    },
   },
 }
 </script>
@@ -42,15 +77,31 @@ export default {
 <style scoped lang="scss">
   .beer-list {
     width: 100%;
-    margin: 20px 0px;
-    tr {
-      margin: 0;
-      padding: 0;
-    }
-    td {
-      border: 1px solid grey;
-      padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    font-size: 13px;
+    margin-top: 20px;
+    &--item {
+      display: flex;
+      flex-direction: column;
+      width: 30%;
+      border: 2px solid #777777;
+      margin-bottom: 25px;
     }
   }
-    
+  .item-parameter {
+    display: flex;
+    &__name { width: 30%; }
+    &__key { width: 70%; }
+    &:nth-child(3){
+      flex-grow: 1;
+    }
+  }
+  .parameter {
+    margin: 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+
 </style>
