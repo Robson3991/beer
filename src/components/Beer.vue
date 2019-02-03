@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper">
+    <h1 class="title">Wyszukiwarka browarków :)</h1>
     <div class="search">
       <label for="search">Nazwa </label>
       <input name="search" v-model="searchValue">
@@ -25,6 +26,7 @@ const beerApi = 'https://api.myjson.com/bins/1dmbtq';
 
 export default {
   name: 'Beer',
+
   data() {
     return {
       productList: [],
@@ -39,11 +41,14 @@ export default {
       ]
     }
   },
+
   async created() {
     let data = (await Axios.get(beerApi)).data;
     this.productList = data;
   },
+
   computed: {
+
     filteredList() {
 
       let beers = this.productList.filter(post => {
@@ -53,28 +58,32 @@ export default {
       let sortOption = this.sort;
 
       function compare(a, b){
-      switch(sortOption){
-        case 'stand':
-          return b.stand - a.stand;
-        case 'alk':
-          return b.alk - a.alk;
-        case 'plato':
-          return b.plato - a.plato;
-        case 'ibu':
-          return b.ibu - a.ibu;
-        default:
-          return b - a;
+        switch(sortOption){
+          case 'stand':
+            return b.stand - a.stand;
+          case 'alk':
+            return b.alk - a.alk;
+          case 'plato':
+            return b.plato - a.plato;
+          case 'ibu':
+            return b.ibu - a.ibu;
+          default:
+            return b - a;
+        }
       }
-    }
-        
-    return beers.sort(compare);
-      
+      return beers.sort(compare);
     },
   },
 }
 </script>
 
 <style scoped lang="scss">
+
+  .title {
+    margin: 40px 0px;
+    font-size: 20px;
+    font-weight: 200;
+  }
   .beer-list {
     width: 100%;
     display: flex;
