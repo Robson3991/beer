@@ -9,6 +9,16 @@
         <option v-for="item in options" :label="item.label" :value="item.value"></option>
       </select>
     </div>
+    <div class="filter-list">
+      <div class="filter-option">
+          <label>alk</label>
+          <input type="number" v-model="filterList.alk">
+      </div>
+      <div class="filter-option">
+        <label>plato</label>
+        <input type="number" v-model="filterList.plato">
+      </div>
+    </div>
     <div class="beer-list">
       <div class="beer-list--item" v-for="post in filteredList">
         <div class="item-parameter" v-for="(value, key) in post">
@@ -38,6 +48,10 @@ export default {
         {label: 'alk', value: 'alk'},
         {label: 'plato', value: 'plato'},
         {label: 'ibu', value: 'ibu'},
+      ],
+      filterList: [
+        {alk: ''},
+        {plato: ''}
       ]
     }
   },
@@ -50,7 +64,6 @@ export default {
   computed: {
 
     filteredList() {
-
       let beers = this.productList.filter(post => {
         return post.name.toLowerCase().includes(this.searchValue.toLowerCase())
       });
@@ -71,7 +84,30 @@ export default {
             return b - a;
         }
       }
-      return beers.sort(compare);
+
+
+      let filters = {};
+
+      if(parseInt(this.filterList.alk) > 0){
+        filters.alk = [parseInt(this.filterList.alk)];
+      }
+      if(parseInt(this.filterList.plato) > 0){
+        filters.plato = [parseInt(this.filterList.plato)];
+      }
+
+      function multiFilter(array, filters) {
+
+        const filterKeys = Object.keys(filters);
+        return array.filter((item) => {
+          return filterKeys.every(key => {
+            if (!filters[key].length) return true;
+            return filters[key].includes(item[key]);
+          });
+        });
+      }
+
+      return multiFilter(beers.sort(compare), filters);
+    
     },
   },
 }
@@ -111,6 +147,14 @@ export default {
     margin: 0;
     padding: 5px;
     border: 1px solid #ccc;
+  }
+  .filter-list {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    .filter-option {
+      margin-right: 5px;
+    }
   }
 
 </style>
